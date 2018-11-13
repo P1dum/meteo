@@ -1,4 +1,4 @@
-#include "H:S9/Capteur_pour_l_embarque/LUX/Lux.h"
+#include "Lux.h"
 
 void setup() {
   Serial.begin(9600);
