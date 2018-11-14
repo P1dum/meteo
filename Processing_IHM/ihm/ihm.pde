@@ -18,8 +18,7 @@ float[] temp;
 int NB_VAL_MAX = 200;
 
 // Displays a simple line chart representing a time series.
- 
-XYChart lineChart;
+ XYChart lineChart;
 XYChart lineChart2;
 XYChart lineChart3;
 XYChart lineChart4;
@@ -27,10 +26,10 @@ XYChart lineChart4;
 // Loads data into the chart and customises its appearance.
 void setup()
 {
-  //size(1000,800);// Taille de fenetre x,y
-  size(1000,700);
+  size(1000,700); // Taille de la fenêtre
   textFont(createFont("Arial",10),10);
  
+  // Définition de la taille de nos tableaux
   X_axis = new float [NB_VAL_MAX];
   RH = new float [NB_VAL_MAX];
   T = new float [NB_VAL_MAX];
@@ -41,8 +40,6 @@ void setup()
  for (int i=0; i< NB_VAL_MAX; i++){
   X_axis[i] = i;
  }
- 
- 
  
  
   // Both x and y data set here.  
@@ -110,32 +107,24 @@ void setup()
   
    //myPort = new Serial(this, Serial.list()[0], 9600);      // Prendra le premier port com dispo
    myPort = new Serial(this, "COM7", 9600);      // Prendra le premier port com dispo
-  // TODO : trouver un formalisme dans l'envoi des données pour les traiter ici, ensuite.
-  // Dans notre cas : "RH/T/LUX/PRES/TEMP\n"
-  
+   
+  // Formalisme choisi des données envoyé : "RH/T/LUX/PRES/TEMP\n"
   
 }
  
 // Draws the chart and a title.
 void draw() //Equivalent loop() arduino
 {
-  
   // MAJ des données à afficher
  lineChart.setData(X_axis,RH);
  lineChart2.setData(X_axis,T);
  lineChart3.setData(X_axis,Lux);
  lineChart4.setData(X_axis,Pres);
 
-  
-  
-  background(255);    // 
-  textSize(9);
+  background(255); // Couleur fond écran en niveau de gris : 255=blanc, 0=noir 
+  textSize(9); // Taille du texte dans l'écran 
   
   //Décalage des graph en Y
-  /*lineChart.draw(15,15,470,170);    // coordx, coody, taillex, taille y
-  lineChart2.draw(15,200,470,170);
-  lineChart3.draw(15,385,470,170);
-  lineChart4.draw(15,570,470,170);*/
   lineChart.draw(15,15,900,160);    // coordx, coody, taillex, taille y
   lineChart2.draw(15,175,900,160);
   lineChart3.draw(15,335,900,160);
@@ -168,9 +157,8 @@ void draw() //Equivalent loop() arduino
 void serialEvent(Serial p) {       //ISR lorsque réception de datas sur le port série
   String inString = p.readStringUntil('\n'); // Lis les données du "paquet" de données reçu et s'arrête à \n
   if(inString != null){
-   String[] data_received = split(inString, '/');
-   
-   // Récupérer données dans data_received [0], [1] ...
+    // Récupérer données dans data_received [0], [1] ...
+   String[] data_received = split(inString, '/'); // On affecte au tableau data_received
    try {
      //Fonction permettant de décaler les données reçues dans le tableau
      // Fonction System.arraycopy(RH (((Tableau d'entrée))),0 (((indice de début))), RH (((Tableau de dest))),
@@ -190,17 +178,16 @@ void serialEvent(Serial p) {       //ISR lorsque réception de datas sur le port
      print(" Pression:");
      print(data_received[3]);
      
-    //RH[0] = data_received[0];//Float.parseFloat(str);
-    if (Float.parseFloat(data_received[0]) >= 1000){
-       data_received[0]=null;
+    RH[0] = Float.parseFloat(data_received[0]); // Float.parseFlat(string) permet de convertir la string en float
+    if(Float.parseFloat(data_received[0]) > 100){// Si la valeur de l'hygrométrie est supérieur à 100 il y a eu un bug
+                                                 // dans la récupération des données car l'hygrométrie est exprimée en %
+      data_received[0]=null;
     }
-    RH[0] = Float.parseFloat(data_received[0]);
-    //print(RH[0]);
     T[0] = Float.parseFloat(data_received[1]);
     Lux[0] = Float.parseFloat(data_received[2]);
     Pres[0] = Float.parseFloat(data_received[3]);
     }catch(RuntimeException e) {
-    e.printStackTrace();
+    e.printStackTrace(); // Afficher les erreurs dans le debugger
     } 
   }
 } 
