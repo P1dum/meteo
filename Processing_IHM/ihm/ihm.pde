@@ -4,7 +4,7 @@ import processing.serial.*;
  
 Serial myPort;    // The serial port
 PFont myFont;     // The display font
-//String inString;  // Input string from serial port
+String inString;  // Input string from serial port
 int lf = 10;      // ASCII linefeed 
 
 float[] X_axis;
@@ -108,7 +108,7 @@ void setup()
   lineChart4.setPointSize(5);
   lineChart4.setLineWidth(2);
   
-   //myPort = new Serial(this, Serial.list()[0], 9600);      // Prendra le premier port com dispo
+   myPort = new Serial(this, Serial.list()[0], 9600);      // Prendra le premier port com dispo
   
   // TODO : trouver un formalisme dans l'envoi des données pour les traiter ici, ensuite.
   // Dans notre cas : "RH/T/LUX/PRES/TEMP\n"
@@ -171,11 +171,16 @@ void serialEvent(Serial p) {       //ISR lorsque réception de datas sur le port
    //Fonction permettant de push les données reçus dans le tableau
    // Fonction System.arraycopy(RH (((Tableau d'entrée))),0 (((indice de début))), RH (((Tableau de dest))),
    //                            1 (((indice de dest))), NB_VAL_MAX - 1 (((Nombre de valeurs à copier))) )
+   System.arraycopy(RH, 0, RH, 1, NB_VAL_MAX - 1);
+   System.arraycopy(T, 0, T, 1, NB_VAL_MAX - 1);
+   System.arraycopy(Lux, 0, Lux, 1, NB_VAL_MAX - 1);
+   System.arraycopy(Pres, 0,Pres, 1, NB_VAL_MAX - 1);
    
-  /* RH[0] = data_received[0];
-  T[0] = data_received[1];
-  Lux[0] = data_received[2];
-  Pres[0] = data_received[3];*/
+  //RH[0] = data_received[0];//Float.parseFloat(str);
+  RH[0] = Float.parseFloat(data_received[0]);
+  /*T[0] = Float.parseFloat(data_received[1]);
+  Lux[0] = Float.parseFloat(data_received[2]);
+  Pres[0] = Float.parseFloat(data_received[3]);*/
    
    
   }
