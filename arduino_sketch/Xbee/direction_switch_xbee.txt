@@ -1,0 +1,2 @@
+Carte XBee qui émet : switch connectée sur le micro
+Carte Xbee qui reçoit : switch connectée sur l'USB
