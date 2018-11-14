@@ -130,6 +130,7 @@ int receive(int * integral_RH, int * decimal_rh, int * integral_T, int * decimal
 
     number_of_packets--;
     }
+    if((*integral_RH) + *decimal_rh + *integral_T + *decimal_T) != *checksum) return -1;
   return 0;
 }
 
