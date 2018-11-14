@@ -108,8 +108,8 @@ void setup()
   lineChart4.setPointSize(5);
   lineChart4.setLineWidth(2);
   
-   myPort = new Serial(this, Serial.list()[0], 9600);      // Prendra le premier port com dispo
-  
+   //myPort = new Serial(this, Serial.list()[0], 9600);      // Prendra le premier port com dispo
+   myPort = new Serial(this, "COM7", 9600);      // Prendra le premier port com dispo
   // TODO : trouver un formalisme dans l'envoi des données pour les traiter ici, ensuite.
   // Dans notre cas : "RH/T/LUX/PRES/TEMP\n"
   
@@ -146,44 +146,61 @@ void draw() //Equivalent loop() arduino
   fill(120);                                          
   textSize(20);                                        // Define following text function size
   text("Hygrométrie (en %)", 70,30);  //text("test", positionx, positiony)
-  /*textSize(11);
-  text("Gross domestic product measured in inflation-corrected $US", 
-        70,45*/
+  textSize(11);
+  text("DHT11", 70,45);
      
   textSize(20);                                        // Define following text function size
   text("Température (en °C)", 70,190);  //text("test", positionx, positiony)
+  textSize(11);
+  text("MPL115A2", 70,205);
   
   textSize(20);                                        // Define following text function size
   text("Luminance (en lux)", 70,350);  //text("test", positionx, positiony)
+  textSize(11);
+  text("TEMT6000", 70,365);
   
   textSize(20);                                        // Define following text function size
   text("Pression (en kPa)", 70,510);  //text("test", positionx, positiony)
+  textSize(11);
+  text("MPL115A2", 70,525);
 }
 
 void serialEvent(Serial p) {       //ISR lorsque réception de datas sur le port série
   String inString = p.readStringUntil('\n'); // Lis les données du "paquet" de données reçu et s'arrête à \n
   if(inString != null){
    String[] data_received = split(inString, '/');
-   // Sécus : S'assurer d'avoir reçu une chaîne complète
-   // indice : inString.length()
+   
    // Récupérer données dans data_received [0], [1] ...
-   
-   //Fonction permettant de push les données reçus dans le tableau
-   // Fonction System.arraycopy(RH (((Tableau d'entrée))),0 (((indice de début))), RH (((Tableau de dest))),
-   //                            1 (((indice de dest))), NB_VAL_MAX - 1 (((Nombre de valeurs à copier))) )
-   System.arraycopy(RH, 0, RH, 1, NB_VAL_MAX - 1);
-   System.arraycopy(T, 0, T, 1, NB_VAL_MAX - 1);
-   System.arraycopy(Lux, 0, Lux, 1, NB_VAL_MAX - 1);
-   System.arraycopy(Pres, 0,Pres, 1, NB_VAL_MAX - 1);
-   
-  //RH[0] = data_received[0];//Float.parseFloat(str);
-  RH[0] = Float.parseFloat(data_received[0]);
-  /*T[0] = Float.parseFloat(data_received[1]);
-  Lux[0] = Float.parseFloat(data_received[2]);
-  Pres[0] = Float.parseFloat(data_received[3]);*/
-   
-   
+   try {
+     //Fonction permettant de décaler les données reçues dans le tableau
+     // Fonction System.arraycopy(RH (((Tableau d'entrée))),0 (((indice de début))), RH (((Tableau de dest))),
+     //                            1 (((indice de dest))), NB_VAL_MAX - 1 (((Nombre de valeurs à copier))) )
+     System.arraycopy(RH, 0, RH, 1, NB_VAL_MAX - 1);
+     System.arraycopy(T, 0, T, 1, NB_VAL_MAX - 1);
+     System.arraycopy(Lux, 0, Lux, 1, NB_VAL_MAX - 1);
+     System.arraycopy(Pres, 0,Pres, 1, NB_VAL_MAX - 1);
+     
+     //Affichage pour le debugger (faculatatif)
+     print("Hygro:");
+     print(data_received[0]);
+     print(" Temperature:");
+     print(data_received[1]);
+     print(" Luminance:");
+     print(data_received[2]);
+     print(" Pression:");
+     print(data_received[3]);
+     
+    //RH[0] = data_received[0];//Float.parseFloat(str);
+    if (Float.parseFloat(data_received[0]) >= 1000){
+       data_received[0]=null;
+    }
+    RH[0] = Float.parseFloat(data_received[0]);
+    //print(RH[0]);
+    T[0] = Float.parseFloat(data_received[1]);
+    Lux[0] = Float.parseFloat(data_received[2]);
+    Pres[0] = Float.parseFloat(data_received[3]);
+    }catch(RuntimeException e) {
+    e.printStackTrace();
+    } 
   }
-  
-  
 } 
