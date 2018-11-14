@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "meteo\\src\\main.ino",
+    "port": "COM6"
+}
