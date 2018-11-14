@@ -105,8 +105,8 @@ void setup()
   lineChart4.setPointSize(5);
   lineChart4.setLineWidth(2);
   
-   //myPort = new Serial(this, Serial.list()[0], 9600);      // Prendra le premier port com dispo
-   myPort = new Serial(this, "COM7", 9600);      // Prendra le premier port com dispo
+   //myPort = new Serial(this, Serial.list()[0], 9600);  // Prendra le premier port com dispo
+   myPort = new Serial(this, "COM7", 9600);  // Prend le port com7 -> changer la valeur du COM si besoin
    
   // Formalisme choisi des données envoyé : "RH/T/LUX/PRES/TEMP\n"
   
